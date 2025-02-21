@@ -68,7 +68,7 @@ const CoursesTable: React.FC<CourseProps> = ({ courses, editable = false }) => {
   }
 
   return (
-    <>
+    <div className='flex flex-col space-y-1'>
       <Typography.Title level={3}>Список курсов</Typography.Title>
       <Table
         dataSource={courses}
@@ -98,7 +98,7 @@ const CoursesTable: React.FC<CourseProps> = ({ courses, editable = false }) => {
           </Form.Item>
         </Form>
       </Modal>
-    </>
+    </div>
   )
 };  
 export default CoursesTable;
