@@ -2,6 +2,7 @@ import { Form, Input, Button, Select, Typography, message } from 'antd';
 import { FC } from 'react';
 import { useGetRolesQuery, useRegisterMutation } from '../api';
 import { Role } from '../models/Role';
+import { showNotification } from '../hooks/showNotification';
 
 const { Title } = Typography;
 
@@ -15,10 +16,10 @@ const CreateAdmin: FC = () => {
     const onFinish = async (values: { login: string; password: string; role: string }) => {
         try {
             await register(values).unwrap();
-            message.success('Админ успешно создан!');
+            showNotification('success', 'Админ успешно создан!');
             form.resetFields();
-        } catch (error) {
-            message.error('Не удалось создать админа.');
+        } catch (e: any) {
+            showNotification('error', e?.data?.message || "Непредвиденная ошибка, попробуйте позже")
         }
     };
 

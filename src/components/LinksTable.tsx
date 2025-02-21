@@ -18,8 +18,8 @@ const LinksTable: React.FC<LinksTableProps> = ({ links, showAdminName = false })
     const columns: ColumnsType<Link> = [
       {
         title: 'ID',
-        dataIndex: 'id',
         key: 'id',
+        render: (_: any, __: any, index: number) => index + 1,
       },
       {
         title: 'Название курса',

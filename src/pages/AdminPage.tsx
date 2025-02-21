@@ -43,6 +43,7 @@ const AdminPage: FC = () => {
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
                 <AddCourse/>
                 <CoursesTable
+                    editable={true}
                     courses={courses ?? []}
                 />
             </div>

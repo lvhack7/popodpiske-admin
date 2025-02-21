@@ -257,7 +257,7 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
     },
     {
       title: 'Общая стоимость, тенге',
-      dataIndex: ['link', 'course', 'totalPrice'],
+      dataIndex: 'totalPrice',
       key: 'totalPrice',
       render: (totalPrice: number) => formatNumber(totalPrice),
     },

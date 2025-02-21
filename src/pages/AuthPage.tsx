@@ -1,19 +1,28 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { Form, Input, Button, Typography } from 'antd';
 import { LoginDto } from '../models/dto/LoginDto';
 import { useLoginMutation } from '../api';
 import { showNotification } from '../hooks/showNotification';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { adminCreated } from '../redux/adminSlice';
 
 const { Title } = Typography;
 
 const AuthPage: FC = () => {
+    const token = localStorage.getItem("access_token")
+    const {isLoggedIn} = useAppSelector(state => state.adminReducer)
+
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [login] = useLoginMutation();
     const [form] = Form.useForm<LoginDto>();
+
+    useEffect(() => {
+        if (isLoggedIn && token) {
+            navigate('/')
+        }
+    }, [isLoggedIn, token])
 
     const onFinish = async (values: LoginDto) => {
         try {

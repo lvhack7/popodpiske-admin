@@ -12,7 +12,7 @@ const AddCourse: React.FC = () => {
 
     const onFinish = async (values: any) => {
         try {
-            await addCourse(values).unwrap()
+            await addCourse({ ...values, totalPrice: Number(values.totalPrice) }).unwrap()
             showNotification("success", "Курс был добавлен") 
             form.resetFields()
         } catch(e: any) {

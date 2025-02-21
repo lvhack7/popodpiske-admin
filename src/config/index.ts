@@ -1,1 +1,1 @@
-export const API_URL = 'https://api.popodpiske.com';
+export const API_URL = 'https://api.popodpiske.com' //'http://localhost:5002';

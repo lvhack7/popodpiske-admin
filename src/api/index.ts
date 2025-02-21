@@ -65,6 +65,13 @@ export const baseApi = createApi({
             }),
             invalidatesTags: ['Admins']
         }),
+        removeAdmin: builder.mutation<void, number>({
+            query: (id) => ({
+                url: '/admin/'+id,
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['Admins']
+        }),
         getAdmins: builder.query<Admin[], void>({
             query: () => "admin",
             providesTags: ['Admins']
@@ -103,10 +110,18 @@ export const baseApi = createApi({
             }),
             invalidatesTags: ['Courses']
         }),
+        updateCourse: builder.mutation<void, Course>({
+            query: (data) => ({
+                url: "courses",
+                method: 'PUT',
+                body: data
+            }),
+            invalidatesTags: ['Courses']
+        }),
         getRoles: builder.query<Role[], void>({
             query: () => "roles",
         })
     }),
 })
 
-export const {useGetOrdersQuery, useGetAdminOrdersQuery, useGetAdminsQuery, useGetRolesQuery, useGetAllLinksQuery, useGetLinksQuery, useGetCoursesQuery, useRegisterMutation, useGenerateLinkMutation, useAddCourseMutation, useLoginMutation} = baseApi
+export const {useGetOrdersQuery, useGetAdminOrdersQuery, useUpdateCourseMutation, useRemoveAdminMutation, useGetAdminsQuery, useGetRolesQuery, useGetAllLinksQuery, useGetLinksQuery, useGetCoursesQuery, useRegisterMutation, useGenerateLinkMutation, useAddCourseMutation, useLoginMutation} = baseApi
