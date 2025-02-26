@@ -1,13 +1,16 @@
 import React, { useState, useRef } from 'react';
-import { Table, Tag, Input, Button, Space, Typography } from 'antd';
+import { Table, Tag, Input, Button, Space, Typography, DatePicker } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/es/table';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import Order from '../models/Order';
 import { Payment } from '../models/Payment';
 import { formatNumber, getNextBillingDate } from '../utils';
+import ru_RU from 'antd/es/locale/ru_RU';
+
 
 const { Title } = Typography;
+const { RangePicker } = DatePicker;
 
 const statusMapping: { [key: string]: { text: string; color: string } } = {
   success: { text: 'Успешно', color: 'green' },
@@ -20,7 +23,7 @@ const orderStatusMapping: { [key: string]: { text: string; color: string } } = {
   active: { text: 'Активный', color: 'green' },
   past_due: { text: 'Просроченный', color: 'orange' },
   completed: { text: 'Завершенный', color: 'blue' },
-  pending: {text: 'В процессе', color: 'gray'},
+  pending: { text: 'В процессе', color: 'gray' },
   cancelled: { text: 'Отмененный', color: 'red' }
 };
 
@@ -50,7 +53,6 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
   };
 
   // Helper to add search props to a column.
-  // It supports a simple dataIndex or an array for nested keys.
   const getColumnSearchProps = (
     dataIndex: string | string[]
   ): ColumnType<Order> => ({
@@ -224,7 +226,7 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
     },
   ];
 
-  // --- Main table columns (from your description items) ---
+  // --- Main table columns ---
   const columns: ColumnsType<Order> = [
     {
       title: '#Заказ',
@@ -242,7 +244,6 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
           orderStatusMapping[status] || { text: status, color: 'default' };
         return <Tag color={color}>{text}</Tag>;
       },
-      // Provide fixed filters for order status
       filters: Object.entries(orderStatusMapping).map(([value, { text }]) => ({
         text,
         value,
@@ -279,18 +280,106 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
       key: 'monthlyPrice',
       render: (price: number) => formatNumber(price),
     },
+    // Новые колонки для оплаты:
+    {
+      title: 'Сколько оплачено месяцев',
+      key: 'paidMonths',
+      render: (_: any, record: Order) => {
+        const paidMonths = record.payments
+          ? record.payments.filter((p) => p.status === 'success').length
+          : 0;
+        return paidMonths;
+      },
+    },
+    {
+      title: 'Сколько оплачено в сумме',
+      key: 'paidSum',
+      render: (_: any, record: Order) => {
+        const paidMonths = record.payments
+          ? record.payments.filter((p) => p.status === 'success').length
+          : 0;
+        return formatNumber(paidMonths * record.monthlyPrice);
+      },
+    },
+    {
+      title: 'Сколько осталось месяцев',
+      key: 'remainingMonths',
+      render: (_: any, record: Order) => {
+        const paidMonths = record.payments
+          ? record.payments.filter((p) => p.status === 'success').length
+          : 0;
+        return record.numberOfMonths - paidMonths;
+      },
+    },
+    {
+      title: 'Сколько осталось в сумме',
+      key: 'remainingSum',
+      render: (_: any, record: Order) => {
+        const paidMonths = record.payments
+          ? record.payments.filter((p) => p.status === 'success').length
+          : 0;
+        const remaining = record.numberOfMonths - paidMonths;
+        return formatNumber(remaining * record.monthlyPrice);
+      },
+    },
     {
       title: 'Следующая дата списания',
       dataIndex: 'nextBillingDate',
       key: 'nextBillingDate',
       render: (date: string | Date) => formatDate(date),
+      // Добавляем фильтр по диапазону дат с помощью RangePicker
+      filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          <RangePicker
+            onChange={(dates, dateStrings) => {
+              if (dates) {
+                setSelectedKeys(dateStrings);
+              } else {
+                setSelectedKeys([]);
+              }
+            }}
+            locale={ru_RU.DatePicker}
+            style={{ marginBottom: 8, display: 'block' }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => confirm()}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Фильтр
+            </Button>
+            <Button
+              onClick={() => {
+                clearFilters && clearFilters();
+                confirm();
+              }}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Сбросить
+            </Button>
+          </Space>
+        </div>
+      ),
+      onFilter: (value, record) => {
+        // value — массив двух дат (в формате строки)
+        if (!value || !Array.isArray(value) || value.length !== 2) return true;
+        const [start, end] = value;
+        const recordDate = new Date(record.nextBillingDate);
+        return recordDate >= new Date(start) && recordDate <= new Date(end);
+      },
+      filterIcon: (filtered: boolean) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      ),
     },
     {
       title: 'Имя Фамилия',
       key: 'userName',
       render: (_, record: Order) =>
         record.user ? `${record.user.firstName} ${record.user.lastName}` : '—',
-      // Custom filter for full name
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div style={{ padding: 8 }}>
           <Input
