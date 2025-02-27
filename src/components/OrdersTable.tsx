@@ -165,7 +165,10 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
   };
 
   const buildPaymentsArray = (order: Order): Payment[] => {
-    const { payments, numberOfMonths, monthlyPrice } = order;
+    const { payments, numberOfMonths, monthlyPrice, status } = order;
+
+    if (order.nextBillingDate === null && status === "pending") return [];
+
     const sorted = [...payments].sort(
       (a, b) =>
         new Date(a.paymentDate).getTime() - new Date(b.paymentDate).getTime()
