@@ -257,8 +257,7 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
       title: 'Название курса',
       dataIndex: 'courseName',
       key: 'courseName',
-      render: (courseName: string, record: Order) => courseName || record.link.course.courseName,
-      ...getColumnSearchProps(['link', 'course', 'courseName']),
+      ...getColumnSearchProps('courseName'),
     },
     {
       title: 'Общая стоимость, тенге',
