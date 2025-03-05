@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Table, Typography, Button, Modal, Form, Input } from 'antd';
+import { Table, Typography, Button, Modal, Form, Input, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { Course } from '../models/Course';
 import { formatNumber } from '../utils';
-import { useUpdateCourseMutation } from '../api';
+import { useDeleteCourseMutation, useUpdateCourseMutation } from '../api';
 import { showNotification } from '../hooks/showNotification';
 
 interface CourseProps {
@@ -16,6 +16,7 @@ const CoursesTable: React.FC<CourseProps> = ({ courses, editable = false }) => {
   const [currentCourse, setCurrentCourse] = useState<Partial<Course>>({});
   const [form] = Form.useForm();
   const [updateCourse] = useUpdateCourseMutation();
+  const [deleteCourse] = useDeleteCourseMutation();
 
   const showModal = (course: Course) => {
     setCurrentCourse(course);
@@ -26,7 +27,7 @@ const CoursesTable: React.FC<CourseProps> = ({ courses, editable = false }) => {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      await updateCourse({ id: currentCourse.id, courseName: values.courseName, totalPrice: Number(values.totalPrice) }).unwrap();
+      await updateCourse({ id: currentCourse.id || 0, courseName: values.courseName, totalPrice: Number(values.totalPrice) }).unwrap();
       setIsModalVisible(false);
     } catch (e: any) {
       showNotification("error", e?.data?.message || "Непредвиденная ошибка, попробуйте позже")
@@ -36,6 +37,15 @@ const CoursesTable: React.FC<CourseProps> = ({ courses, editable = false }) => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteCourse(id).unwrap();
+      showNotification('success', 'Курс успешно удален!');
+    } catch (e: any) {
+      showNotification("error", e?.data?.message || "Непредвиденная ошибка, попробуйте позже")
+    }
+  }; 
 
   const columns: ColumnsType<Course> = [
     {
@@ -62,7 +72,17 @@ const CoursesTable: React.FC<CourseProps> = ({ courses, editable = false }) => {
       dataIndex: 'operation',
       key: 'operation',
       render: (_, record: Course) => (
-        <Button type='link' onClick={() => showModal(record)}>Изменить</Button>
+        <>
+          <Button type='link' onClick={() => showModal(record)}>Изменить</Button>
+          <Popconfirm
+            title="Вы уверены, что хотите удалить этот курс?"
+            onConfirm={() => handleDelete(record.id)}
+            okText="Да"
+            cancelText="Нет"
+          >
+            <Button type='link' danger>Удалить</Button>
+          </Popconfirm>
+        </>
       ),
     });
   }

@@ -4,6 +4,7 @@ import { User } from "./User";
 
 export default interface Order {
     id: number
+    courseName: string;
     totalPrice: number;
     numberOfMonths: number;
     monthlyPrice: number;

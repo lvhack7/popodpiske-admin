@@ -104,7 +104,7 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
             size="small"
             style={{ width: 90 }}
           >
-            Очистить
+            Сбросить
           </Button>
           <Button type="link" size="small" onClick={() => close()}>
             Закрыть
@@ -255,9 +255,9 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
     },
     {
       title: 'Название курса',
-      dataIndex: ['link', 'course', 'courseName'],
+      dataIndex: 'courseName',
       key: 'courseName',
-      ...getColumnSearchProps(['link', 'course', 'courseName']),
+      ...getColumnSearchProps('courseName'),
     },
     {
       title: 'Общая стоимость, тенге',
@@ -402,7 +402,7 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
               size="small"
               style={{ width: 90 }}
             >
-              Search
+              Найти
             </Button>
             <Button
               onClick={() => {
@@ -412,7 +412,7 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
               size="small"
               style={{ width: 90 }}
             >
-              Reset
+              Сбросить
             </Button>
           </Space>
         </div>

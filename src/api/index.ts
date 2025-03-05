@@ -118,10 +118,17 @@ export const baseApi = createApi({
             }),
             invalidatesTags: ['Courses']
         }),
+        deleteCourse: builder.mutation<void, number>({
+            query: (id) => ({
+                url: `courses/${id}`,
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['Courses']
+        }),
         getRoles: builder.query<Role[], void>({
             query: () => "roles",
         })
     }),
 })
 
-export const {useGetOrdersQuery, useGetAdminOrdersQuery, useUpdateCourseMutation, useRemoveAdminMutation, useGetAdminsQuery, useGetRolesQuery, useGetAllLinksQuery, useGetLinksQuery, useGetCoursesQuery, useRegisterMutation, useGenerateLinkMutation, useAddCourseMutation, useLoginMutation} = baseApi
+export const {useGetOrdersQuery, useDeleteCourseMutation, useGetAdminOrdersQuery, useUpdateCourseMutation, useRemoveAdminMutation, useGetAdminsQuery, useGetRolesQuery, useGetAllLinksQuery, useGetLinksQuery, useGetCoursesQuery, useRegisterMutation, useGenerateLinkMutation, useAddCourseMutation, useLoginMutation} = baseApi
