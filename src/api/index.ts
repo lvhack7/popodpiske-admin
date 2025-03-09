@@ -65,6 +65,13 @@ export const baseApi = createApi({
             }),
             invalidatesTags: ['Admins']
         }),
+        changePassword: builder.mutation<void, {oldPassword: string, newPassword: string}>({
+            query: (data) => ({
+                url: '/admin/change-password',
+                method: 'POST',
+                body: data
+            })
+        }),
         removeAdmin: builder.mutation<void, number>({
             query: (id) => ({
                 url: '/admin/'+id,
@@ -131,4 +138,4 @@ export const baseApi = createApi({
     }),
 })
 
-export const {useGetOrdersQuery, useDeleteCourseMutation, useGetAdminOrdersQuery, useUpdateCourseMutation, useRemoveAdminMutation, useGetAdminsQuery, useGetRolesQuery, useGetAllLinksQuery, useGetLinksQuery, useGetCoursesQuery, useRegisterMutation, useGenerateLinkMutation, useAddCourseMutation, useLoginMutation} = baseApi
+export const {useGetOrdersQuery, useDeleteCourseMutation, useChangePasswordMutation, useGetAdminOrdersQuery, useUpdateCourseMutation, useRemoveAdminMutation, useGetAdminsQuery, useGetRolesQuery, useGetAllLinksQuery, useGetLinksQuery, useGetCoursesQuery, useRegisterMutation, useGenerateLinkMutation, useAddCourseMutation, useLoginMutation} = baseApi
