@@ -51,7 +51,7 @@ const LinksTable: React.FC<LinksTableProps> = ({ links, showAdminName = false })
         title: 'Кем создано',
         dataIndex: 'admin',
         key: 'adminName',
-        render: (admin: Admin) => admin.login,
+        render: (admin: Admin) => admin?.login || '-',
       });
     }
   
