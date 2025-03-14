@@ -59,7 +59,13 @@ const AdminsTable: React.FC<AdminsTableProps> = ({ admins }) => {
   return (
     <div>
       <Typography.Title level={3}>Список админов</Typography.Title>
-      <Table dataSource={admins} columns={columns} rowKey="id" />
+      <Table dataSource={admins} columns={columns} rowKey="id"
+      pagination={{
+        onChange: (page, pageSize) => {
+          columns[0].render = (_: any, __: any, index: number) => (page - 1) * pageSize + index + 1;
+        },
+      }}
+      />
     </div>
   );
 };
