@@ -15,7 +15,9 @@ interface LinksTableProps {
 }
 
 const LinksTable: React.FC<LinksTableProps> = ({ links, showAdminName = false }) => {
-    const columns: ColumnsType<Link> = [
+  const filteredLinks = links.filter(link => link.course?.courseName || link.admin?.login);
+  
+  const columns: ColumnsType<Link> = [
       {
         title: 'ID',
         key: 'id',
@@ -58,7 +60,7 @@ const LinksTable: React.FC<LinksTableProps> = ({ links, showAdminName = false })
     return (
       <div>
         <Typography.Title level={3}>Список ссылок</Typography.Title>
-        <Table className="overflow-x-auto" columns={columns} dataSource={links} rowKey="id" />
+        <Table className="overflow-x-auto" columns={columns} dataSource={filteredLinks} rowKey="id" />
       </div>
     );
 };
