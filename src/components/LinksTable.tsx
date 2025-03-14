@@ -15,7 +15,7 @@ interface LinksTableProps {
 }
 
 const LinksTable: React.FC<LinksTableProps> = ({ links, showAdminName = false }) => {
-  const filteredLinks = links.filter(link => link.course?.courseName || link.admin?.login);
+  const filteredLinks = links.filter(link => link.course?.courseName && link.admin?.login);
   
   const columns: ColumnsType<Link> = [
       {

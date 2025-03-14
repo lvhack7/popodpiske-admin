@@ -94,6 +94,11 @@ const CoursesTable: React.FC<CourseProps> = ({ courses, editable = false }) => {
         dataSource={courses}
         columns={columns}
         rowKey="id"
+        pagination={{
+          onChange: (page, pageSize) => {
+            columns[0].render = (_: any, __: any, index: number) => (page - 1) * pageSize + index + 1;
+          },
+        }}
       />
       <Modal
         title="Изменить курс"

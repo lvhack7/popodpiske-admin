@@ -77,7 +77,7 @@ export const baseApi = createApi({
                 url: '/admin/'+id,
                 method: 'DELETE'
             }),
-            invalidatesTags: ['Admins']
+            invalidatesTags: ['Admins', 'Links', 'Orders']
         }),
         getAdmins: builder.query<Admin[], void>({
             query: () => "admin",
@@ -85,9 +85,11 @@ export const baseApi = createApi({
         }),
         getAdminOrders: builder.query<Order[], void>({
             query: () => '/orders/admin',
+            providesTags: ['Orders']
         }),
         getOrders: builder.query<Order[], void>({
             query: () => '/orders/all',
+            providesTags: ['Orders']
         }),
         getLinks: builder.query<Link[], void>({
             query: () => 'links',
