@@ -5,7 +5,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import Order from '../models/Order';
 import { Payment } from '../models/Payment';
-import { formatNumber, getNextBillingDate } from '../utils';
+import { formatNumber } from '../utils';
 import ru_RU from 'antd/es/locale/ru_RU';
 
 
@@ -14,7 +14,7 @@ const { RangePicker } = DatePicker;
 
 const statusMapping: { [key: string]: { text: string; color: string } } = {
   success: { text: 'Успешно', color: 'green' },
-  failure: { text: 'Отказ', color: 'red' },
+  failed: { text: 'Неуспешно', color: 'red' },
   pending: { text: 'В ожидании', color: 'orange' },
   cancel: { text: 'Не будет списано', color: 'gray' }
 };
@@ -164,37 +164,44 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders }) => {
     });
   };
 
+  // const buildPaymentsArray = (order: Order): Payment[] => {
+  //   const { payments, numberOfMonths, monthlyPrice, status } = order;
+
+  //   if (order.nextBillingDate === null && status === "pending") return [];
+
+  //   const sorted = [...payments].sort(
+  //     (a, b) =>
+  //       new Date(a.paymentDate).getTime() - new Date(b.paymentDate).getTime()
+  //   );
+
+  //   const monthlyAmt = monthlyPrice;
+  //   let nextBillingDate = order.nextBillingDate;
+
+  //   const result: Payment[] = [];
+  //   for (let i = 0; i < numberOfMonths; i++) {
+  //     const real = sorted[i];
+  //     if (real) {
+  //       result.push(real);
+  //     } else {
+  //       result.push({
+  //         id: 0,
+  //         amount: monthlyAmt,
+  //         currency: 'KZT',
+  //         status: order.status === "cancelled" ? 'cancel' : 'pending',
+  //         paymentDate: nextBillingDate,
+  //       });
+  //       nextBillingDate = getNextBillingDate(nextBillingDate);
+  //     }
+  //   }
+
+  //   return result;
+  // };
+
   const buildPaymentsArray = (order: Order): Payment[] => {
-    const { payments, numberOfMonths, monthlyPrice, status } = order;
-
-    if (order.nextBillingDate === null && status === "pending") return [];
-
-    const sorted = [...payments].sort(
+    return [...order.payments].sort(
       (a, b) =>
         new Date(a.paymentDate).getTime() - new Date(b.paymentDate).getTime()
     );
-
-    const monthlyAmt = monthlyPrice;
-    let nextBillingDate = order.nextBillingDate;
-
-    const result: Payment[] = [];
-    for (let i = 0; i < numberOfMonths; i++) {
-      const real = sorted[i];
-      if (real) {
-        result.push(real);
-      } else {
-        result.push({
-          id: 0,
-          amount: monthlyAmt,
-          currency: 'KZT',
-          status: order.status === "cancelled" ? 'cancel' : 'pending',
-          paymentDate: nextBillingDate,
-        });
-        nextBillingDate = getNextBillingDate(nextBillingDate);
-      }
-    }
-
-    return result;
   };
 
   // --- Payment table columns (for the expandable section) ---
